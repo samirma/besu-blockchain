@@ -1,0 +1,52 @@
+version: '3.7'
+
+services:
+  node-1:
+    image: hyperledger/besu:latest
+    container_name: node-1
+    command: --data-path=/opt/besu/data --genesis-file=/opt/besu/cliqueGenesis.json --network-id 123 --rpc-http-enabled --rpc-http-api=ETH,NET,CLIQUE --host-allowlist="*" --rpc-http-cors-origins="all"
+    volumes:
+      - ./Node-1/data:/opt/besu/data
+      - ./cliqueGenesis.json:/opt/besu/cliqueGenesis.json
+    ports:
+      - 30303:30303
+      - 8545:8545
+    networks:
+      chain_net:
+          ipv4_address: 172.4.0.111
+
+
+  node-2:
+    image: hyperledger/besu:latest
+    container_name: node-2
+    command: --data-path=/opt/besu/data --genesis-file=/opt/besu/cliqueGenesis.json --bootnodes=enode://a3210a7a9e4504558cea0c02b8214d3205e78d382b6b72e0425caeb3287486090b340dc992ac8ecfb14ac99bd3d0188690aa4670b25d7172918d881dafddf61a@172.4.0.111:30303 --network-id 123 --p2p-port=30304 --rpc-http-enabled --rpc-http-api=ETH,NET,CLIQUE --host-allowlist="*" --rpc-http-cors-origins="all" --rpc-http-port=8546
+    volumes:
+      - ./Node-2/data:/opt/besu/data
+      - ./cliqueGenesis.json:/opt/besu/cliqueGenesis.json
+    ports:
+      - 30304:30304
+      - 8546:8546
+    networks:
+      chain_net:
+          ipv4_address: 172.4.0.112
+
+  node-3:
+    image: hyperledger/besu:latest
+    container_name: node-3
+    command: --data-path=/opt/besu/data --genesis-file=/opt/besu/cliqueGenesis.json --bootnodes=enode://a3210a7a9e4504558cea0c02b8214d3205e78d382b6b72e0425caeb3287486090b340dc992ac8ecfb14ac99bd3d0188690aa4670b25d7172918d881dafddf61a@172.4.0.111:30303 --network-id 123 --p2p-port=30305 --rpc-http-enabled --rpc-http-api=ETH,NET,CLIQUE --host-allowlist="*" --rpc-http-cors-origins="all" --rpc-http-port=8547
+    volumes:
+      - ./Node-3/data:/opt/besu/data
+      - ./cliqueGenesis.json:/opt/besu/cliqueGenesis.json
+    ports:
+      - 30305:30305
+      - 8547:8547
+    networks:
+      chain_net:
+          ipv4_address: 172.4.0.113
+
+networks:
+  chain_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.4.0.0/24
