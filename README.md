@@ -16,6 +16,14 @@ To set up the Besu blockchain network, follow these steps:
    cd besu-blockchain
    ```
 
+2.1 **Create Project Directory**:
+   ```bash
+   mkdir -p {Node-1,Node-2,Node-3}/data
+   sudo chown -R 1000:1000 Node-*
+   cd Node-1
+   besu --data-path=data public-key export-address --to=data/node1Address
+   ```
+
 3. **Docker Compose Configuration**:
    The `docker-compose.yml` file defines the network configuration. It includes three Besu nodes (node-1, node-2, and node-3) with specific settings.
 
