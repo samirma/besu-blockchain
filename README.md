@@ -21,7 +21,7 @@ To set up the Besu blockchain network, follow these steps:
    mkdir -p {Node-1,Node-2,Node-3}/data
    sudo chown -R 1000:1000 Node-*
    cd Node-1
-   besu --data-path=data public-key export-address --to=data/node1Address
+   docker run  -v ./data:/var/lib/besu hyperledger/besu:latest --data-path=/var/lib/besu public-key export-address --to=/var/lib/besu/node1Address
    ```
 
 3. **Docker Compose Configuration**:
