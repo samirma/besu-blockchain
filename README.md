@@ -19,10 +19,39 @@ To set up the Besu blockchain network, follow these steps:
 2.1 **Create Project Directory**:
    ```bash
    mkdir -p {Node-1,Node-2,Node-3}/data
-   sudo chown -R 1000:1000 Node-*
    cd Node-1
-   docker run  -v ./data:/var/lib/besu hyperledger/besu:latest --data-path=/var/lib/besu public-key export-address --to=/var/lib/besu/node1Address
+   docker run  -v ./data:/var/lib/besu hyperledger/besu:25.2.2 --data-path=/var/lib/besu public-key export-address --to=/var/lib/besu/node1Address
+
+   cp Node-1/*
+
+   #sudo chown -R 1000:1000 Node-*
    ```
+
+2.2 **Start outside from docker compose**:
+   ```bash
+
+   # Node-1
+   docker rm node-1 ;  docker run --name node-1 \
+   -v ./Node-1/data:/opt/besu/data \
+   -v ./cliqueGenesis.json:/opt/besu/cliqueGenesis.json \
+   -p 30303:30303 \
+   -p 8545:8545 \
+   hyperledger/besu:25.2.2 --data-path=/opt/besu/data --genesis-file=/opt/besu/cliqueGenesis.json --network-id 123 --rpc-http-enabled --rpc-http-api=ETH,NET,CLIQUE --host-allowlist="*" --rpc-http-cors-origins="all" --sync-min-peers 3
+
+
+
+   # Node-1
+   docker rm node-2 ;  docker run --name node-2 \
+   -v ./Node-2/data:/opt/besu/data \
+   -v ./cliqueGenesis.json:/opt/besu/cliqueGenesis.json \
+   -p 8546:8546 \
+   -p 30304:30304 \
+   hyperledger/besu:25.2.2 --data-path=/opt/besu/data --genesis-file=/opt/besu/cliqueGenesis.json --bootnodes=enode://3edbd256b7a336c0d6d005d4f01e1e0e5c29fe69d2deb26f8d88d925d6bcba6e1b60cf758b0484ffb4261a56cee7cbd0e749641fecabb4952edec88c6e562658@127.0.0.1:30303 --network-id 123 --p2p-port=30304 --rpc-http-enabled --rpc-http-api=ETH,NET,CLIQUE --host-allowlist="*" --rpc-http-cors-origins="all" --rpc-http-port=8546 --profile=ENTERPRISE
+
+
+
+   ```
+
 
 3. **Docker Compose Configuration**:
    The `docker-compose.yml` file defines the network configuration. It includes three Besu nodes (node-1, node-2, and node-3) with specific settings.
